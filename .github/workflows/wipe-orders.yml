@@ -2,6 +2,10 @@ name: Wipe FatMan orders (VPS)
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/TRIGGER_VPS_WIPE'
 
 concurrency:
   group: wipe-fatman-orders
@@ -23,4 +27,6 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             cd /var/www/fatman/backend
+            git fetch origin main
+            git reset --hard origin/main
             node src/scripts/clear-fatman-orders.js
