@@ -36,8 +36,8 @@ const createApp = () => {
     admsRoutes
   );
 
-  app.use(express.json({ limit: '2mb' }));
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: '8mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '8mb' }));
   app.use(morgan(config.env === 'production' ? 'combined' : 'dev'));
 
   app.get('/', (req, res) => {

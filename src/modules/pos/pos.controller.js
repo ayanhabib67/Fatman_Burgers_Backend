@@ -2,6 +2,7 @@ const asyncHandler = require('../../shared/utils/asyncHandler');
 const authService = require('./services/auth.service');
 const syncService = require('./services/sync.service');
 const menuService = require('./services/menu.service');
+const uploadService = require('./services/upload.service');
 
 const payload = (req) => {
   if (req.body && Object.prototype.hasOwnProperty.call(req.body, 'p')) {
@@ -88,6 +89,20 @@ const rpcDispatch = asyncHandler(async (req, res) => {
   }
 });
 
+const uploadImage = asyncHandler(async (req, res) => {
+  const p = payload(req) || {};
+  const data = await uploadService.uploadImageDataUrl(p.image || p.dataUrl, {
+    folder: p.folder || 'fatman/transfers',
+  });
+  return rpcOk(res, { ok: true, ...data });
+});
+
+const deleteImage = asyncHandler(async (req, res) => {
+  const p = payload(req) || {};
+  const data = await uploadService.deleteImage(p.publicId || p.url || p.image);
+  return rpcOk(res, { ok: true, ...data });
+});
+
 module.exports = {
   ping,
   login,
@@ -96,5 +111,7 @@ module.exports = {
   getMenu,
   seedMenu,
   upsertMenuItem,
+  uploadImage,
+  deleteImage,
   rpcDispatch,
 };

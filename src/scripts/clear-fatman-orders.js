@@ -7,13 +7,14 @@ const mongoose = require('mongoose');
   const db = mongoose.connection.db;
   const outlet = process.env.DEFAULT_OUTLET || 'fatman';
 
+  const kinds = ['orders', 'voided', 'expenses', 'days', 'moves'];
   const before = await db.collection('posrecords').countDocuments({
     outlet,
-    kind: { $in: ['orders', 'voided'] },
+    kind: { $in: kinds },
   });
   const del = await db.collection('posrecords').deleteMany({
     outlet,
-    kind: { $in: ['orders', 'voided'] },
+    kind: { $in: kinds },
   });
 
   const seqKey = 'seq:' + outlet;
@@ -25,6 +26,7 @@ const mongoose = require('mongoose');
 
   console.log(JSON.stringify({
     outlet,
+    kinds,
     deletedRecords: del.deletedCount,
     before,
     seqKey,

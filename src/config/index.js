@@ -27,6 +27,11 @@ const config = {
 
   /** Set false on Hostinger ADMS-only production to stop LAN TCP pull noise. */
   zkPullEnabled: String(process.env.ZK_PULL_ENABLED || 'true').toLowerCase() !== 'false',
+
+  /* Cloudinary — till day-close bank transfer slips (secret stays on the server). */
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
 };
 
 module.exports = config;
