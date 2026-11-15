@@ -1,0 +1,34 @@
+name: Delete one FatMan order (VPS)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/TRIGGER_VPS_DELETE_ORDER'
+
+concurrency:
+  group: delete-fatman-order
+  cancel-in-progress: false
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete one FatMan order on VPS Mongo
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            cd /var/www/fatman/backend
+            git fetch origin main
+            git reset --hard origin/main
+            ORDER_NO="$(tr -d '[:space:]' < scripts/TRIGGER_VPS_DELETE_ORDER)"
+            echo "Deleting FatMan order #${ORDER_NO}"
+            node src/scripts/delete-fatman-order-by-no.js "$ORDER_NO"
