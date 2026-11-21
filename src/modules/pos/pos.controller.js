@@ -3,6 +3,7 @@ const authService = require('./services/auth.service');
 const syncService = require('./services/sync.service');
 const menuService = require('./services/menu.service');
 const uploadService = require('./services/upload.service');
+const inventory = require('../inventory');
 
 const payload = (req) => {
   if (req.body && Object.prototype.hasOwnProperty.call(req.body, 'p')) {
@@ -81,6 +82,9 @@ const rpcDispatch = asyncHandler(async (req, res) => {
         })),
       });
     default:
+      if (Object.prototype.hasOwnProperty.call(inventory.rpc, fn)) {
+        return rpcOk(res, await inventory.rpc[fn](p || {}));
+      }
       return res.status(404).json({
         ok: false,
         error: 'unknown_rpc',
